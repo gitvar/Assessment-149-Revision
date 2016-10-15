@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+#
 # Create a class called MyCar. When you initialize a new instance or object of
 # the class, allow the user to define some instance variables that tell us the
 # year, color, and model of the car. Create an instance variable that is set
@@ -7,7 +9,11 @@
 
 require 'time'
 
+#
+# StandardServicePlan is an example of a Module.
+#
 module StandardServicePlan
+
   SERVICE_PLAN_IN_YEARS = 5
 
   def months_remaining_on_service_plan(year_of_manufacture)
@@ -21,6 +27,9 @@ module StandardServicePlan
   end
 end
 
+#
+# Car is an example of a class implementation.
+#
 class Car
   include StandardServicePlan
 
