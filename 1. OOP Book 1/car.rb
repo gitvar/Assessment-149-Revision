@@ -28,8 +28,8 @@ class Car
   # rubocop does not like class vars!
   @number_of_cars = 0 # Change Class Var to Class Instance Variable.
 
-  attr_accessor :current_gear, :handbreak
   attr_reader :year, :model, :speed, :engine_status, :colour
+  attr_reader :current_gear, :handbreak
 
   def initialize(year, colour, model)
     # @number_of_cars += 1 # class instce var not available in instance method.
@@ -71,23 +71,23 @@ class Car
   def shift_up
     return if current_gear == :reverse || engine_status == :off
     gear_index = @gears.index(current_gear)
-    self.current_gear = @gears[gear_index + 1] unless current_gear == :fifth
+    @current_gear = @gears[gear_index + 1] unless current_gear == :fifth
     @speed += 30 unless @speed >= 150
   end
 
   def shift_down
     return if current_gear == :reverse || engine_status == :off
     gear_index = @gears.index(current_gear)
-    self.current_gear = @gears[gear_index - 1] unless current_gear == :neutral
+    @current_gear = @gears[gear_index - 1] unless current_gear == :neutral
     @speed -= 30 unless @speed <= 30
   end
 
   def handbreak_on
-    self.handbreak = :on
+    @handbreak = :on
   end
 
   def handbreak_off
-    self.handbreak = :off
+    @handbreak = :off
   end
 
   def engine_off
@@ -101,13 +101,13 @@ class Car
   end
 
   def stop
-    self.current_gear = :neutral
+    @current_gear = :neutral
     @speed = 0
   end
 
   def reverse
     return unless [:neutral, :reverse].include?(current_gear)
-    self.current_gear = :reverse
+    @current_gear = :reverse
     @speed -= 10 unless @speed <= -40
   end
 
