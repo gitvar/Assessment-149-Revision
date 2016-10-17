@@ -9,9 +9,7 @@
 
 require 'time'
 
-#
 # StandardServicePlan is an example of a Module.
-#
 module StandardServicePlan
 
   SERVICE_PLAN_IN_YEARS = 5
@@ -27,46 +25,34 @@ module StandardServicePlan
   end
 end
 
-#
-# Car is an example of a class implementation.
-#
-class Car
-  include StandardServicePlan
+module Towable
+  def is_towable?(weight_in_kilograms)
+    weight_in_kilograms < 2000 ? true : false
+  end
+end
 
-  # Using class instance var instead of class var because of rubocop.
-  # rubocop does not like class vars!
-  @number_of_cars = 0 # Change Class Var to Class Instance Variable.
+class Vehicle
+
+  @@no_of_vehicles = 0
 
   attr_reader :year, :model, :speed, :engine_status, :colour
-  attr_reader :current_gear, :handbreak
+  attr_reader :weight, :current_gear, :handbreak
 
   def initialize(year, colour, model)
-    # @number_of_cars += 1 # class instce var not available in instance method.
+    @@no_of_vehicles += 1
     @year = year
     @colour = colour
     @model = model
     @speed = 0
     @handbreak = :on
-    @gears = [:reverse, :neutral, :first, :second, :third, :fourth, :fifth]
+    @gears = [:reverse, :neutral, :first, :second, :third, :fourth]
     @current_gear = :neutral
     @engine_status = :off
+    @weight = 0
   end
 
-  # Comment out because class instance var not available via instance Method.
-  # def total_number_of_cars # Instance Method
-  #   @number_of_cars
-  # end
-
-  def self.increment_no_of_cars
-    @number_of_cars += 1
-  end
-
-  def self.total_number_of_cars # Class Method
-    @number_of_cars
-  end
-
-  def self.what_am_i # Class Method
-    puts "I am a Car class."
+  def self.no_of_vehicles
+    @@no_of_vehicles
   end
 
   def self.gas_milage(distance_in_miles, gallons_of_gas)
@@ -80,7 +66,7 @@ class Car
   def shift_up
     return if current_gear == :reverse || engine_status == :off
     gear_index = @gears.index(current_gear)
-    @current_gear = @gears[gear_index + 1] unless current_gear == :fifth
+    @current_gear = @gears[gear_index + 1] unless current_gear == @gears.last
     @speed += 30 unless @speed >= 150
   end
 
@@ -130,13 +116,72 @@ class Car
     end
   end
 
+  def vehicle_age
+    age
+  end
+
+  private
+
+  def age
+    Time.now.year - @year
+  end
+end
+
+class Truck < Vehicle
+  include StandardServicePlan
+  include Towable
+
+  def initialize(year, colour, model)
+    super(year, colour, model)
+    @weight = 5000
+  end
+
+  SLEEPER_CABIN = true
+  NO_OF_WHEELS = 18
+
+  def no_of_wheels?
+    NO_OF_WHEELS
+  end
+end
+
+# Car is an example of a class implementation.
+class Car < Vehicle
+  include StandardServicePlan
+  include Towable
+
+  @@no_of_cars = 0
+
+  NO_OF_WHEELS = 4
+
+  def initialize(year, colour, model)
+    super(year, colour, model)
+    @@no_of_cars += 1
+    @gears = [:reverse, :neutral, :first, :second, :third, :fourth, :fifth]
+    @weight = 1500
+  end
+
+  def has_a_boot?
+    BOOT
+  end
+
+  def no_of_wheels?
+    NO_OF_WHEELS
+  end
+
+  def self.total_number_of_cars # Class Method
+    @@no_of_cars
+  end
+
+  def self.what_am_i # Class Method
+    puts "I am a Car class."
+  end
+
   def to_s
     "My car is a #{model} (overriding the .to_s method)."
   end
 end
 
 my_toyota = Car.new(2015, 'silver', 'Toyota Yaris')
-Car.increment_no_of_cars
 
 puts "My Car:"
 puts "Colour = #{my_toyota.colour}."
@@ -251,10 +296,9 @@ puts
 puts my_toyota
 puts
 
-my_volkswagen = Car.new(1983, 'Yellow', 'VW Golf')
-Car.increment_no_of_cars
-puts "My 2nd car is a: #{my_volkswagen.model}."
-puts "My #{my_volkswagen.model}'s color is #{my_volkswagen.colour}."
+my_vw = Car.new(1983, 'Yellow', 'VW Golf')
+puts "My 2nd car is a: #{my_vw.model}."
+puts "My #{my_vw.model}'s color is #{my_vw.colour}."
 puts
 
 # Class method call:
@@ -267,4 +311,29 @@ puts
 # puts
 
 puts "One of my cars' gas milage = #{Car.gas_milage(466, 11)} miles/gallon."
+puts
+
+puts "My #{my_toyota.model} has #{my_toyota.no_of_wheels?} wheels."
+puts
+
+my_truck = Truck.new(1999, "White", "Hino")
+puts "My truck has #{my_truck.no_of_wheels?} wheels."
+puts
+
+puts "The number of Vehicle instances created = #{Car.no_of_vehicles}."
+puts "I have #{Car.total_number_of_cars} cars."
+puts
+
+puts "Is my #{my_vw.model} towable?: #{my_vw.is_towable?(my_vw.weight)}."
+# puts "Is my #{my_truck.model} towable?: #{my_truck.is_towable?(my_truck.weight)}."
+puts
+
+puts Vehicle.ancestors.to_s
+puts
+puts Truck.ancestors.inspect
+puts
+puts "#{Car.ancestors}"
+puts
+
+puts "My VW is #{my_vw.vehicle_age} years old."
 puts
