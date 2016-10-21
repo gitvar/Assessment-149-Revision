@@ -24,7 +24,6 @@ class Person
   end
 end
 
-
 bob = Person.new('Robert')
 puts bob.name                  # => 'Robert'
 puts bob.first_name            # => 'Robert'
