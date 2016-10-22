@@ -7,7 +7,7 @@ module Swim
 end
 
 module Fly
-  def Fly
+  def fly
     "flying!"
   end
 end
