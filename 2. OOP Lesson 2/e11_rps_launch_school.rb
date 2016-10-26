@@ -128,7 +128,7 @@ class RPSGame
     end
   end
 
-  def display_choices
+  def display_moves
     puts
     puts "#{human.name} chose: #{human.move}."
     puts "#{computer.name} chose: #{computer.move}."
@@ -140,7 +140,7 @@ class RPSGame
     loop do
       human.choose
       computer.choose
-      display_choices
+      display_moves
       display_winner
       break unless play_again?
     end
